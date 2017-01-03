@@ -130,6 +130,10 @@ public class HTTPServer {
 
         if (urlString.contains("/detail?id=")) {
             writeStudentFormDetails(Integer.parseInt(getQueryParameters().get("id")));
+        } else if (urlString.contains("/updateStudent?")) {
+            updateStudentDetails();
+        } else if (urlString.contains("/delete?id=")) {
+            deleteStudent(Integer.parseInt(getQueryParameters().get("id")));
         } else {
             writeStudentList();
         }
@@ -154,6 +158,21 @@ public class HTTPServer {
     private void writeStudentFormDetails(int id) throws IOException {
         FormDetails formDetails = new FormDetails(studentsManager.getStudentById(id));
         outputRequest.write(formDetails.getHtml());
+    }
+
+    private void updateStudentDetails() throws IOException {
+        Student student = studentsManager.getStudentById(Integer.parseInt(getQueryParameters().get("id")));
+        student.setFirstName(getQueryParameters().get("first_name"));
+        student.setLastName(getQueryParameters().get("last_name"));
+        student.setGroup(getQueryParameters().get("group"));
+
+        outputRequest.write("Student updated ! <a href=\"/\">Get back to homepage</a>");
+    }
+
+    private void deleteStudent(int id) throws IOException {
+        studentsManager.getStudents().remove(id);
+
+        outputRequest.write("Student deleted ! <a href=\"/\">Get back to homepage</a>");
     }
 
     private void writeStudentList() throws IOException {

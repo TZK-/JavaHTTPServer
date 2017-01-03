@@ -1,0 +1,3 @@
+<mapping title="Students list">
+    <list source="students"/>
+</mapping>

@@ -31,4 +31,12 @@ public class StudentsManager {
     public Map<Integer, Student> getStudents() {
         return this.students;
     }
+
+    public void save(Exportable exporter) {
+        try {
+            exporter.export("students.xml");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

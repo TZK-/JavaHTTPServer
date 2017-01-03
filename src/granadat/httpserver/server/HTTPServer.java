@@ -50,10 +50,10 @@ public class HTTPServer {
             Socket clientSocket = openConnection();
 
             initRequestHeaders();
+            currentUrl = getCurrentUrl();
 
             writeHeaders();
-            
-            outputRequest.write("Hello world");
+            routeCurrentUrl();
 
             closeConnection(clientSocket);
         }
@@ -96,6 +96,17 @@ public class HTTPServer {
         this.headers = headers;
     }
 
+    private URL getCurrentUrl() throws IOException {
+        String url = headers.get("Url");
+
+        return new URL(
+                "http",
+                "localhost",
+                serverSocket.getLocalPort(),
+                (url != null ? url : "")
+        );
+    }
+
     private void writeHeaders() throws IOException {
         outputRequest.write("HTTP/1.0 200 OK\r\n");
         outputRequest.write("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n");
@@ -114,4 +125,39 @@ public class HTTPServer {
         clientSocket.close();
     }
 
+    private void routeCurrentUrl() throws IOException {
+        String urlString = currentUrl.toString();
+
+        if (urlString.contains("/detail?id=")) {
+            writeStudentFormDetails(Integer.parseInt(getQueryParameters().get("id")));
+        } else {
+            writeStudentList();
+        }
+
+    }
+
+    private Map<String, String> getQueryParameters() throws UnsupportedEncodingException {
+        Map<String, String> queryPairs = new LinkedHashMap<>();
+        String query = currentUrl.getQuery();
+        String[] pairs = query.split("&");
+        for (String pair : pairs) {
+            int idx = pair.indexOf("=");
+            queryPairs.put(
+                    URLDecoder.decode(pair.substring(0, idx), "UTF-8"),
+                    URLDecoder.decode(pair.substring(idx + 1), "UTF-8")
+            );
+        }
+
+        return queryPairs;
+    }
+
+    private void writeStudentFormDetails(int id) throws IOException {
+        FormDetails formDetails = new FormDetails(studentsManager.getStudentById(id));
+        outputRequest.write(formDetails.getHtml());
+    }
+
+    private void writeStudentList() throws IOException {
+        parser.parse("list.xml");
+        outputRequest.write(parser.getHtml());
+    }
 }

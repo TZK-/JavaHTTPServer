@@ -166,12 +166,14 @@ public class HTTPServer {
         student.setLastName(getQueryParameters().get("last_name"));
         student.setGroup(getQueryParameters().get("group"));
 
+        studentsManager.save(new XMLStudentExporter(studentsManager));
+
         outputRequest.write("Student updated ! <a href=\"/\">Get back to homepage</a>");
     }
 
     private void deleteStudent(int id) throws IOException {
         studentsManager.getStudents().remove(id);
-
+        studentsManager.save(new XMLStudentExporter(studentsManager));
         outputRequest.write("Student deleted ! <a href=\"/\">Get back to homepage</a>");
     }
 

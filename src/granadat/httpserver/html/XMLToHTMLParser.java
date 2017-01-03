@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class XMLToHTMLParser implements Parsable {
+public class XMLToHTMLParser implements Parsable, Htmlable {
 
     private DefaultHandler handler;
 
@@ -38,6 +38,11 @@ public class XMLToHTMLParser implements Parsable {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public String getHtml() {
+        return XMLToHTMLHandler.html;
     }
 
 }

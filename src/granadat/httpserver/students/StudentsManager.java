@@ -17,6 +17,10 @@ public class StudentsManager {
         return this.students.get(id);
     }
 
+    public void addStudent(Student student) {
+        this.students.put(student.getId(), student);
+    }
+
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();

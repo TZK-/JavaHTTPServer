@@ -59,7 +59,7 @@ public class XMLStudentExporter implements Exportable {
         transformer = transformerFactory.newTransformer();
 
         DOMSource source = new DOMSource(doc);
-        StreamResult result = new StreamResult(new File("students.xml"));
+        StreamResult result = new StreamResult(new File(path));
 
         transformer.transform(source, result);
 
